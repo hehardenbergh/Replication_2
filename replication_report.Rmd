@@ -57,6 +57,7 @@ white.dat = read.csv('dataverse_files/white_face_data.csv')
 # from "balance_check.r"
 
 # check to see if randomization created balanced samples in Enos experiment.
+# this code makes the data for table 2.
 
 out.balance.test <- xBalance(fmla = treatment ~ liberal
                           + republican
@@ -88,7 +89,22 @@ xtable.out.balance.text %>%
          `treatment=1`, 
          std.diff,
          z) %>% 
-  gt(rownames_to_stub = TRUE)
+  gt(rownames_to_stub = TRUE) %>% 
+  tab_header("Table 2. Covariate balance across treatment conditions") %>% 
+  cols_label('treatment=0' = "Control",
+             'treatment=1' = "Treatment",
+             'std.diff' = "Standard Difference*",
+             'z' = "Z Score") %>% 
+  fmt_number(columns = vars('treatment=0',
+                   'treatment=1',
+                   'std.diff',
+                   'z'), 
+             decimals = 2) %>% 
+  tab_stubhead_label(label = "Condition") %>% 
+  tab_footnote(footnote = "*Difference in standardized units.",
+               locations = cells_column_labels(columns = vars('std.diff'))) %>% 
+  tab_footnote(footnote = "†Mean response values for pretreatment variables accounting for stratification into train stations. All variables are 0 and 1 variables, except for Hispanic threat, which is a seven-point scale indicating how threatening respondents find Hispanics, recoded 0–1; residency, which is measured in years; and income, which is annual income in dollars.",
+               locations = cells_stub(rows = 'liberal'))
 
 
 missing.balance.test = xBalance(fmla = missing ~ liberal+republican+obama.disapprove+ride.everyday+voted.2010+romney.voter+Hispanics+age+residency.new+hispanic.new+gender+college+us.born+income.new+male, data = dat.t1, report = c("std.diffs","z.scores","adj.means","chisquare.test"),na.rm=T)
@@ -187,7 +203,6 @@ colnames(final.mat) = c('variable','subset','N','ate','greater.p.value','lesser.
 print(final.mat)
 
 final.mat.main = final.mat ##final.mat for output creation later
-
 ```
 
 ```{r}
@@ -467,6 +482,7 @@ final.mat.income = final.mat  ##for later
 ```
 
 ```{r}
+
 # from "primetest.r"
 ##primetest.r #use randomization inference to look for changes in responses
 ##induced by experiment in subsets by covariates. ##RdE September 2012
@@ -560,6 +576,8 @@ for(subset in subsets){ ##b.only, complier, and non-compler subsets
 ```
 
 ```{r}
+
+
 # from "output_create.r"
 
 #output_create.r
@@ -1026,6 +1044,7 @@ dev.off()
 ```
 
 ```{r}
+
 # from "face_summary_pnas.r"
 
 #Author gives summary statistics for each face in confederate sample and
